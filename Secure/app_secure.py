@@ -10,7 +10,7 @@ app.secret_key = os.urandom(24)
 
 # Part 5)
 app.config['SESSION_COOKIE_SECURE'] = True # Cookie only travels over HTTPS
-app.config['SESSION_COOKIE_HTTPONLY'] = True # JavaScript cannot access the cookie
+app.config['SESSION_COOKIE_HTTPONLY'] = True # prevents JavaScript from reading the session cookie.
 
 # ── DB ───────────────────────────────────────────────
 
@@ -24,7 +24,8 @@ def get_db():
 
 def get_trainee(username):
     conn = get_db()
-    # Part 1) To prevent the SQL injection, we added a parameterized query
+    # Part 1) To prevent the SQL injection, we used a parameterized query
+    # We used ? instead of inserting the username directly into the SQL statement.
     # In which the username will be sent seperatly, and will never be interpreted as SQL
     # So when "' OR 1=1 -- " is sent it will be treated as a string not SQL
     row = conn.execute(
@@ -169,8 +170,9 @@ def register():
                                    username=username,
                                    role=role)
         
-        # Part 2) To encrypt our passwords we used bycrypt, a known hashing algorithm made
-        # especially for authentication security. Bycrypt works by adding Salt, which is random data added to the password before hashing 
+        # Part 2) To encrypt our passwords we used bycrypt because it is safer than MD5,and it is a known hashing algorithm made
+        # especially for authentication security. Bycrypt works by adding Salt, which is random data added to the password before hashing
+        # which makes brute-force and rainbow table attacks much harder.
         hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=12)).decode()
 
         conn = get_db()
@@ -198,7 +200,9 @@ def register():
 @app.route('/coop', methods=['GET', 'POST'])
 def coop():
 
-    # Part 4) Access control only allow students
+    # Part 4) We added access control checks using sessions and roles.
+    # This ensures students cannot access admin pages
+    
     if 'username' not in session or session.get('role') != 'student':
         return redirect('/login')
 
@@ -211,6 +215,8 @@ def coop():
         # Part 3) Now we used bleach to sanitize the form's values,
         # So rather than seeing "<script>alert('hacked')</script>" as a
         # code it will see it as plain text
+        # Bleach removes dangerous HTML and script tags before saving the data.
+        
         name       = bleach.clean(request.form['name'])
         birth      = bleach.clean(request.form['birth'])
         mobile     = bleach.clean(request.form['mobile'])
