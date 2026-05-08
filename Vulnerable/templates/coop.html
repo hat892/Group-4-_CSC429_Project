@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>COOP Training Application Channels</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="form-page">
+
+  
+  <nav class="navbar">
+    <a class="navbar-brand" href="#">
+      <span class="brand-name">channels</span>
+      <span class="brand-sub">by stc</span>
+    </a>
+  </nav>
+
+  <div class="page-header">
+    <h1>COOP Training Application</h1>
+    <p>Fill in your details to apply for the cooperative training program</p>
+  </div>
+
+  <div class="container">
+  <form method="POST" action="/coop">
+
+  <fieldset>
+    <legend class="required">Trainee's Name</legend>
+    <input type="text" name="name" placeholder="Enter your full name" required>
+  </fieldset>
+
+  <div class="row">
+    <fieldset>
+      <legend class="required">Birth Date</legend>
+      <input type="date" name="birth" required>
+    </fieldset>
+
+    <fieldset>
+      <legend class="required">Mobile Number</legend>
+      <input type="tel" name="mobile" placeholder="05XXXXXXXX" required>
+    </fieldset>
+  </div>
+
+  <div class="row">
+    <fieldset>
+      <legend class="required">Email</legend>
+      <input type="email" name="email" placeholder="example@gmail.com" required>
+    </fieldset>
+
+    <fieldset>
+      <legend class="required">University Name</legend>
+      <input type="text" name="university" placeholder="Enter university name" required>
+    </fieldset>
+  </div>
+
+  <fieldset>
+    <legend class="required">GPA</legend>
+    <input type="text" name="gpa" placeholder="e.g. 4.5 out of 5.0" required>
+  </fieldset>
+
+
+  <div class="buttons">
+    <button type="submit">Submit →</button>
+  </div>
+
+</form>
+  </div>
+
+  <footer class="footer">
+    
+  </footer>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

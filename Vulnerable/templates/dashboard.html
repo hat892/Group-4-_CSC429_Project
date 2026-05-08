@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="admin-page">
+
+<nav class="navbar">
+  <a class="navbar-brand" href="#">
+    <span class="brand-name">channels</span>
+    <span class="brand-sub">by stc</span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="/logout" class="btn" style="background:#fff;color:#6b21a8;font-weight:600;padding:8px 18px;border-radius:8px;">Logout</a></li>
+  </ul>
+</nav>
+
+<div class="admin-header">
+  <h1>My Dashboard</h1>
+  <p>Your submitted information</p>
+</div>
+
+<div class="admin-content">
+
+  <div class="trainee-card">
+
+    <div class="trainee-card-header">
+      <div class="trainee-avatar">
+  {{ trainee.name[:2] }}
+</div>
+      <div>
+        <div class="trainee-name-header">{{ trainee.name | safe }}</div>
+        <div class="trainee-univ-header">{{ trainee.university | safe }}</div>
+      </div>
+    </div>
+
+    <div class="trainee-card-body">
+
+      <div class="trainee-row">
+        <span class="label">Birth Date</span>
+        <span>{{ trainee.birth }}</span>
+      </div>
+
+      <div class="trainee-row">
+        <span class="label">Mobile</span>
+        <span>{{ trainee.mobile }}</span>
+      </div>
+
+      <div class="trainee-row">
+        <span class="label">Email</span>
+        <span>{{ trainee.email }}</span>
+      </div>
+
+      <div class="trainee-row">
+        <span class="label">GPA</span>
+        <span>{{ trainee.gpa }}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+</body>
+</html>
