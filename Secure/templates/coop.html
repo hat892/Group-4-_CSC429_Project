@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>COOP Training Application – Channels</title>
+  <!-- Shared stylesheet: typography, colours, form, footer styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<!--
+  coop.html – COOP Training Application Form
+  Accessible to authenticated students only (enforced in app.py).
+  Data submitted here is stored in the database and shown on the
+  admin dashboard.  All fields are required by HTML5 and by the
+  server; validateCoop() adds an extra client-side GPA / mobile
+  check before the round-trip to the server.
+-->
+<body class="form-page">
+
+  <!-- .main-content grows to fill the viewport so the footer
+       is always pushed to the bottom of the page (flex: 1) -->
+  <div class="main-content">
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <a class="navbar-brand" href="#">
+        <span class="brand-name">channels</span>
+        <span class="brand-sub">by stc</span>
+      </a>
+    </nav>
+
+    <!-- PAGE HERO HEADER -->
+    <div class="page-header">
+      <h1>COOP Training Application</h1>
+      <p>Fill in your details to apply for the cooperative training program</p>
+    </div>
+
+    <!-- FORM CONTAINER
+         .form-page .container overrides the default split-screen
+         layout (see style.css) so the form is centered on the page -->
+    <div class="container">
+
+      <!--
+        POST to /coop – handled by app.py's coop() route.
+        onsubmit runs validateCoop() (script.js) to catch invalid
+        mobile/GPA values before the request reaches the server.
+      -->
+      <form method="POST" action="/coop" onsubmit="return validateCoop()">
+
+        <!-- Full name ---------------------------------------- -->
+        <fieldset>
+          <legend class="required">Trainee's Name</legend>
+          <input type="text" name="name" placeholder="Enter your full name" required>
+        </fieldset>
+
+        <!-- Birth date + mobile on the same row --------------- -->
+        <div class="row">
+
+          <fieldset>
+            <legend class="required">Birth Date</legend>
+            <input type="date" name="birth" required>
+          </fieldset>
+
+          <!-- validateCoop() checks: starts with 05, 10 digits total -->
+          <fieldset>
+            <legend class="required">Mobile Number</legend>
+            <input type="tel" name="mobile" placeholder="05XXXXXXXX" required>
+          </fieldset>
+
+        </div>
+
+        <!-- Email + university on the same row ---------------- -->
+        <div class="row">
+
+          <fieldset>
+            <legend class="required">Email</legend>
+            <input type="email" name="email" placeholder="example@gmail.com" required>
+          </fieldset>
+
+          <fieldset>
+            <legend class="required">University Name</legend>
+            <input type="text" name="university" placeholder="Enter university name" required>
+          </fieldset>
+
+        </div>
+
+        <!-- GPA – validateCoop() enforces 0.00–5.00 range ------ -->
+        <fieldset>
+          <legend class="required">GPA</legend>
+          <input type="text" name="gpa" placeholder="e.g. 4.5 out of 5.0" required>
+        </fieldset>
+
+        <!-- Submit button -------------------------------------- -->
+        <div class="buttons">
+          <button type="submit">Submit →</button>
+        </div>
+
+      </form>
+
+    </div><!-- /.container -->
+
+  </div><!-- /.main-content -->
+
+  <!-- FOOTER
+       Lives outside .main-content so the flex body layout
+       correctly pushes it to the bottom of every page length. -->
+  <footer class="footer">
+
+    <!-- Top row: branding + contact info -->
+    <div class="footer-top">
+      <div class="footer-logo">
+        <h3>channels</h3>
+        <p>by stc</p>
+        <p>stc group website</p>
+      </div>
+      <div class="footer-contact">
+        <p>Saudi Arabia: info@coop.com.sa</p>
+        <p>Oman: info@coop.com.om</p>
+        <p>Bahrain: info@coop.com.bh</p>
+        <p>Kuwait: info@coop.com.kw</p>
+      </div>
+    </div>
+
+    <!-- Middle row: social media icon placeholders -->
+    <div class="footer-middle">
+      <p>Follow us</p>
+      <div class="socials">
+        <span>f</span><span>X</span><span>▶</span><span>in</span><span>○</span>
+      </div>
+      <p class="links">Corporate Sales | Career</p>
+    </div>
+
+    <!-- Divider -->
+    <hr>
+
+    <!-- Bottom row: legal / misc links -->
+    <div class="footer-bottom">
+      <p>Privacy and policy</p>
+      <p>CITC Postal Regulation</p>
+      <p>Shipment Tracking</p>
+      <p>Contact Number 8001243020</p>
+      <p>2026 channels. All rights reserved</p>
+    </div>
+
+  </footer>
+
+  <!-- Client-side validation helpers (validateCoop lives here) -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

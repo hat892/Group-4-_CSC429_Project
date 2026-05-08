@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Register – Channels</title>
+  <!-- Shared stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* Red error list – rendered when Flask passes {{ errors }}
+       (a list of validation messages from app.py) */
+    .error-box {
+      background: #fee2e2;
+      border: 1px solid #f87171;
+      color: #b91c1c;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+    .error-box ul { margin: 4px 0 0 16px; padding: 0; }
+    .error-box li { margin-bottom: 2px; }
+
+    /* Blue info box listing password / username rules so the
+       user knows what's expected before they start typing */
+    .rules-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 0.82rem;
+      color: #0369a1;
+    }
+    .rules-box strong { display: block; margin-bottom: 4px; }
+    .rules-box ul { margin: 0 0 0 16px; padding: 0; }
+    .rules-box li { margin-bottom: 2px; }
+
+    /* Role toggle: styled radio buttons that look like pill buttons.
+       The hidden <input> drives state; the <label> is the visible
+       element.  CSS :checked + label changes the visual selection. */
+    .role-toggle {
+      display: flex !important;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .role-toggle input[type="radio"] {
+      /* Visually hidden but still accessible to screen-readers */
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      position: absolute !important;
+      opacity: 0 !important;
+    }
+    .role-toggle label {
+      flex: 1;
+      text-align: center;
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: 2px solid #d1d5db;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #6b7280;
+      background: #f9fafb;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      user-select: none;
+      display: block !important;
+    }
+    /* Highlight the selected role in purple */
+    .role-toggle input[type="radio"]:checked + label {
+      border-color: #7c3aed !important;
+      background: #ede9fe !important;
+      color: #6b21a8 !important;
+    }
+    .role-toggle label:hover {
+      border-color: #a78bfa;
+      color: #6b21a8;
+    }
+  </style>
+</head>
+
+<!--
+  register.html – New User Registration Page
+  POST /register is handled by app.py which:
+    1. Validates all fields server-side (same rules as shown in
+       .rules-box below)
+    2. Checks the username is not already taken
+    3. Hashes the password with bcrypt before storing it
+       (NEVER stores plain text – mitigates weak password storage)
+    4. Inserts the new user into the users table with the chosen role
+    5. Redirects to /login on success, or re-renders with {{ errors }}
+
+  Client-side: onsubmit calls validateRegister() (script.js) for
+  immediate feedback before the network request.
+-->
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="#">
+      <span class="brand-name">channels</span>
+      <span class="brand-sub">by stc</span>
+    </a>
+  </nav>
+
+  <!-- SPLIT-SCREEN LAYOUT -->
+  <div class="container">
+
+    <!-- LEFT PANEL: registration form -->
+    <div class="left-panel">
+      <h1>New Register</h1>
+      <p>Create your account</p>
+
+      <!-- Server-side validation errors (list from app.py) -->
+      {% if errors %}
+        <div class="error-box">
+          <ul>
+            {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <!-- Account rules info box – must match validateRegister()
+           in script.js AND the server validation in app.py -->
+      <div class="rules-box">
+        <strong>Account rules:</strong>
+        <ul>
+          <li>Username: at least 8 characters</li>
+          <li>Password: at least 8 characters, must include a special character (e.g. !, @, #)</li>
+          <li>Confirm password must match</li>
+        </ul>
+      </div>
+
+      <!--
+        Registration form.
+        onsubmit="return validateRegister()" runs the JS checks
+        first; returning false prevents submission so the user
+        sees the alert immediately without a server round-trip.
+      -->
+      <form method="POST" action="/register" onsubmit="return validateRegister()">
+
+        <!-- Username: minlength/maxlength gives HTML5 hints;
+             real enforcement happens in app.py -->
+        <input type="text" name="username" placeholder="Username"
+               value="{{ username or '' }}" required minlength="8" maxlength="20">
+
+        <!-- Password: minlength hint only; special-char check is
+             done by validateRegister() and server-side -->
+        <input type="password" name="password" placeholder="Password" required minlength="8">
+
+        <!-- Confirm password: compared server-side in app.py -->
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+
+        <!-- Role selection: Student or Admin.
+             The chosen value is stored in the users table and
+             controls which pages the user can access (RBAC). -->
+        <div class="role-toggle">
+          <input type="radio" id="role_student" name="role" value="student"
+            {% if not role or role == 'student' %}checked{% endif %}>
+          <label for="role_student">Student</label>
+
+          <input type="radio" id="role_admin" name="role" value="admin"
+            {% if role == 'admin' %}checked{% endif %}>
+          <label for="role_admin">Admin</label>
+        </div>
+
+        <button type="submit">Register</button>
+
+      </form>
+
+      <!-- Link back to login for returning users -->
+      <p class="switch">
+        Already have an account? <a href="/login">Login here</a>
+      </p>
+    </div><!-- /.left-panel -->
+
+    <!-- RIGHT PANEL: decorative branding area -->
+    <div class="right-panel">
+      <div class="overlay">
+        <h2>Create Account</h2>
+        <p>Register as student or admin to continue</p>
+      </div>
+    </div>
+
+  </div><!-- /.container -->
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-logo">
+        <h3>channels</h3>
+        <p>by stc</p>
+      </div>
+      <div class="footer-contact">
+        <p>Saudi Arabia: info@coop.com.sa</p>
+      </div>
+    </div>
+    <div class="footer-middle">
+      <p>Follow us</p>
+      <div class="socials">
+        <span>f</span><span>X</span><span>▶</span><span>in</span><span>○</span>
+      </div>
+    </div>
+    <hr>
+    <div class="footer-bottom">
+      <p>2026 channels. All rights reserved</p>
+    </div>
+  </footer>
+
+  <!-- Client-side validation (validateRegister lives here) -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

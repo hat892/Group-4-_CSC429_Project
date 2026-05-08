@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Login – Channels</title>
+  <!-- Shared stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* Inline error banner shown when Flask passes an `error` variable
+       (e.g. "Invalid username or password") – red tint for visibility */
+    .error-box {
+      background: #fee2e2;
+      border: 1px solid #f87171;
+      color: #b91c1c;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<!--
+  login.html – Student Login Page
+  POST /login is handled by app.py which:
+    1. Looks up the username in the users table
+    2. Verifies the password with bcrypt.check_password_hash()
+    3. On success: sets session['username'] and session['role']='student'
+       then redirects to /dashboard
+    4. On failure: re-renders this page with {{ error }} set
+-->
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="#">
+      <span class="brand-name">channels</span>
+      <span class="brand-sub">by stc</span>
+    </a>
+    <ul class="navbar-links">
+      <!-- Quick link to registration for new users -->
+      <li><a href="/register" class="btn">New Register</a></li>
+    </ul>
+  </nav>
+
+  <!-- SPLIT-SCREEN LAYOUT: form on the left, visual on the right -->
+  <div class="container">
+
+    <!-- LEFT PANEL: login form -->
+    <div class="left-panel">
+      <h1>Welcome</h1>
+      <p>Login to view your COOP details</p>
+
+      <!-- Server-side error message (e.g. wrong password) -->
+      {% if error %}
+        <div class="error-box">⚠ {{ error }}</div>
+      {% endif %}
+
+      <!--
+        Login form – fields use `name` attributes that match
+        what app.py reads via request.form['username'] etc.
+        No onsubmit handler here; the server is the source of truth.
+      -->
+      <form method="POST" action="/login">
+        <input type="text"     name="username" placeholder="Username"
+               value="{{ username or '' }}" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+
+      <!-- Registration link for new users -->
+      <a href="/register">Don't have an account? Register</a>
+
+      <!-- Redirect admins to the correct login page -->
+      <p class="switch">
+        Are you an admin? <a href="/adminLogin">Login here</a>
+      </p>
+    </div><!-- /.left-panel -->
+
+    <!-- RIGHT PANEL: decorative branding area -->
+    <div class="right-panel">
+      <div class="overlay">
+        <h2>Start Your COOP Journey</h2>
+        <p>Apply, track, and manage your applications easily</p>
+      </div>
+    </div>
+
+  </div><!-- /.container -->
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-logo">
+        <h3>channels</h3>
+        <p>by stc</p>
+        <p>stc group website</p>
+      </div>
+      <div class="footer-contact">
+        <p>Saudi Arabia: info@coop.com.sa</p>
+        <p>Oman: info@coop.com.om</p>
+        <p>Bahrain: info@coop.com.bh</p>
+        <p>Kuwait: info@coop.com.kw</p>
+      </div>
+    </div>
+    <div class="footer-middle">
+      <p>Follow us</p>
+      <div class="socials">
+        <span>f</span><span>X</span><span>▶</span><span>in</span><span>○</span>
+      </div>
+      <p class="links">Corporate Sales | Career</p>
+    </div>
+    <hr>
+    <div class="footer-bottom">
+      <p>Privacy and policy</p>
+      <p>CITC Postal Regulation</p>
+      <p>Shipment Tracking</p>
+      <p>Contact Number 8001243020</p>
+      <p>2026 channels. All rights reserved</p>
+    </div>
+  </footer>
+
+</body>
+</html>
