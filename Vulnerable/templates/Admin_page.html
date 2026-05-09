@@ -84,8 +84,8 @@
         <div class="trainee-card-header">
           <div class="trainee-avatar">{{ trainee.name[:2] }}</div>
           <div>
-            <div class="trainee-name-header">{{ trainee.name }}</div>
-            <div class="trainee-univ-header">{{ trainee.university }}</div>
+            <div class="trainee-name-header">{{ trainee.name | safe }}</div>
+            <div class="trainee-univ-header">{{ trainee.university | safe }}</div>
           </div>
         </div>
 
